@@ -1,0 +1,24 @@
+{
+  "development": {
+    "username": "umyaolwi2gic9zp5",
+    "password": "Gzf6ToTVewJAkZP5lhzm",
+    "database": "b6ibinpbayqfwpncproo",
+    "host": "b6ibinpbayqfwpncproo-mysql.services.clever-cloud.com",
+    "port": 3306,
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "",
+    "database": "seminco_test02",
+    "host": "localhost",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "",
+    "database": "seminco_production02",
+    "host": "localhost",
+    "dialect": "mysql"
+  }
+}
