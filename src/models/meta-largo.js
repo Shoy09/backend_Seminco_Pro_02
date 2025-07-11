@@ -24,7 +24,7 @@ const MetaLargo = sequelize.define('MetaLargo', {
         allowNull: false
     }
 }, {
-    tableName: 'Meta-Largo', // ¡Importante escaparlo con backticks!
+    tableName: '`Meta-Largo`', // ¡Importante escaparlo con backticks!
     timestamps: false
 });
 

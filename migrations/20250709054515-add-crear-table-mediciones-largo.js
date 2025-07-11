@@ -2,56 +2,61 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('equipos', {
+    await queryInterface.createTable('mediciones_largo', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true
       },
-      nombre: {
+      fecha: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      proceso: {
+      turno: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
       },
-      codigo: {
+      empresa: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
       },
-      marca: {
+      zona: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
       },
-      modelo: {
+      labor: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
       },
-      serie: {
+      veta: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
       },
-      anioFabricacion: {
-        type: Sequelize.INTEGER,
-        allowNull: false
+      tipo_perforacion: {
+        type: Sequelize.STRING,
+        allowNull: true
       },
-      fechaIngreso: {
-        type: Sequelize.DATE,
-        allowNull: false
-      },
-      capacidadYd3: {
+      kg_explosivos: {
         type: Sequelize.FLOAT,
         allowNull: true
       },
-      capacidadM3: {
+      toneladas: {
         type: Sequelize.FLOAT,
+        allowNull: true
+      },
+      envio: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+      },
+      id_explosivo: {
+        type: Sequelize.INTEGER,
         allowNull: true
       }
     });
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('equipos');
+    await queryInterface.dropTable('mediciones_largo');
   }
 };

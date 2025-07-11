@@ -1,26 +1,33 @@
 'use strict';
-
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('metas', {
+    await queryInterface.createTable('toneladas', {
       id: {
         type: Sequelize.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
+        autoIncrement: true,
+        primaryKey: true
       },
-      mes: {
+      fecha: {
+        type: Sequelize.DATEONLY,
+        allowNull: false
+      },
+      turno: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      zona: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      grafico: {
+      tipo: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      nombre: {
+      labor: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      objetivo: {
+      toneladas: {
         type: Sequelize.FLOAT,
         allowNull: false
       }
@@ -28,6 +35,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('metas');
+    await queryInterface.dropTable('toneladas');
   }
 };
