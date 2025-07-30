@@ -28,6 +28,8 @@ const toneladas = require('../routes/api/toneladasRoutes');
 const mediHorizontal = require('../routes/api/medicionesHorizontalRoutes');
 const mediLargo = require('../routes/api/medicionesLargoRoutes');
 const Checklist = require('../routes/api/checklistItemRoutes');
+const semanas = require('../routes/api/semanasRoutes');
+const pdfOperacion = require('../routes/api/pdfRoutes');
 
 router.use('/usuarios', usuariosRoutes);  
 router.use('/auth', authRoutes);  
@@ -55,5 +57,7 @@ router.use('/toneladas', toneladas);
 router.use('/medicion-tal-largo', mediLargo); 
 router.use('/medicion-tal-horizontal', mediHorizontal); 
 router.use('/check-list', Checklist); 
+router.use('/semana-personali', semanas); 
+router.use('/pdf-operacion', pdfOperacion); 
 
 module.exports = router;
