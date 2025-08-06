@@ -4,12 +4,12 @@ const sequelize = require('../config/sequelize');
 // 🔹 Modelo Operacion
 const NubeOperacion = sequelize.define('nube_Operacion', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  turno: { type: DataTypes.STRING, allowNull: false },
-  equipo: { type: DataTypes.STRING, allowNull: false },
-  codigo: { type: DataTypes.STRING, allowNull: false },
-  empresa: { type: DataTypes.STRING, allowNull: false },
-  fecha: { type: DataTypes.STRING, allowNull: false },
-  tipo_operacion: { type: DataTypes.STRING, allowNull: false },
+  turno: { type: DataTypes.STRING, allowNull: true },
+  equipo: { type: DataTypes.STRING, allowNull: true },
+  codigo: { type: DataTypes.STRING, allowNull: true },
+  empresa: { type: DataTypes.STRING, allowNull: true },
+  fecha: { type: DataTypes.STRING, allowNull: true },
+  tipo_operacion: { type: DataTypes.STRING, allowNull: true },
   estado: { type: DataTypes.STRING, defaultValue: 'activo' },
   envio: { type: DataTypes.INTEGER, defaultValue: 0 }
 }, {
@@ -25,10 +25,10 @@ const NubeCheckListOperacion = sequelize.define('nube_CheckListOperacion', {
     references: { model: NubeOperacion, key: 'id' },
     onDelete: 'CASCADE',
   },
-  descripcion: { type: DataTypes.STRING, allowNull: false },
-  decision: { type: DataTypes.INTEGER, allowNull: false },
-  observacion: { type: DataTypes.STRING, allowNull: false },
-  categoria: { type: DataTypes.STRING, allowNull: false }
+  descripcion: { type: DataTypes.STRING, allowNull: true },
+  decision: { type: DataTypes.INTEGER, allowNull: true },
+  observacion: { type: DataTypes.STRING, allowNull: true },
+  categoria: { type: DataTypes.STRING, allowNull: true }
 }, {
   tableName: 'nube_checklist_operacion',
   timestamps: true,
@@ -42,9 +42,9 @@ const NubeHorometros = sequelize.define('nube_Horometros', {
     references: { model: NubeOperacion, key: 'id' },
     onDelete: 'CASCADE',
   },
-  nombre: { type: DataTypes.STRING, allowNull: false },
-  inicial: { type: DataTypes.FLOAT, allowNull: false },
-  final: { type: DataTypes.FLOAT, allowNull: false },
+  nombre: { type: DataTypes.STRING, allowNull: true },
+  inicial: { type: DataTypes.FLOAT, allowNull: true },
+  final: { type: DataTypes.FLOAT, allowNull: true },
   EstaOP: { type: DataTypes.INTEGER, defaultValue: 0 },
   EstaINOP: { type: DataTypes.INTEGER, defaultValue: 0 }
 }, {
@@ -60,11 +60,11 @@ const NubeEstado = sequelize.define('nube_Estado', {
     references: { model: NubeOperacion, key: 'id' },
     onDelete: 'CASCADE',
   },
-  numero: { type: DataTypes.INTEGER, allowNull: false },
-  estado: { type: DataTypes.STRING, allowNull: false },
-  codigo: { type: DataTypes.STRING, allowNull: false },
-  hora_inicio: { type: DataTypes.STRING, allowNull: false },
-  hora_final: { type: DataTypes.STRING, allowNull: false }
+  numero: { type: DataTypes.INTEGER, allowNull: true },
+  estado: { type: DataTypes.STRING, allowNull: true },
+  codigo: { type: DataTypes.STRING, allowNull: true },
+  hora_inicio: { type: DataTypes.STRING, allowNull: true },
+  hora_final: { type: DataTypes.STRING, allowNull: true }
 }, {
   tableName: 'nube_estado',
   timestamps: true,
@@ -73,12 +73,12 @@ const NubeEstado = sequelize.define('nube_Estado', {
 // 🔹 Modelo PerforacionTaladroLargo
 const NubePerforacionTaladroLargo = sequelize.define('nube_PerforacionTaladroLargo', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  zona: { type: DataTypes.STRING, allowNull: false },
-  tipo_labor: { type: DataTypes.STRING, allowNull: false },
-  labor: { type: DataTypes.STRING, allowNull: false },
-  veta: { type: DataTypes.STRING, allowNull: false },
-  nivel: { type: DataTypes.STRING, allowNull: false },
-  tipo_perforacion: { type: DataTypes.STRING, allowNull: false },
+  zona: { type: DataTypes.STRING, allowNull: true },
+  tipo_labor: { type: DataTypes.STRING, allowNull: true },
+  labor: { type: DataTypes.STRING, allowNull: true },
+  veta: { type: DataTypes.STRING, allowNull: true },
+  nivel: { type: DataTypes.STRING, allowNull: true },
+  tipo_perforacion: { type: DataTypes.STRING, allowNull: true },
   estado_id: {
     type: DataTypes.INTEGER,
     references: { model: NubeEstado, key: 'id' },
@@ -92,16 +92,16 @@ const NubePerforacionTaladroLargo = sequelize.define('nube_PerforacionTaladroLar
 // 🔹 Modelo InterPerforacionTaladroLargo
 const NubeInterPerforacionTaladroLargo = sequelize.define('nube_InterPerforacionTaladroLargo', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  codigo_actividad: { type: DataTypes.STRING, allowNull: false },
-  nivel: { type: DataTypes.STRING, allowNull: false },
-  tajo: { type: DataTypes.STRING, allowNull: false },
-  nbroca: { type: DataTypes.INTEGER, allowNull: false },
-  ntaladro: { type: DataTypes.INTEGER, allowNull: false },
-  nbarras: { type: DataTypes.INTEGER, allowNull: false },
-  longitud_perforacion: { type: DataTypes.FLOAT, allowNull: false },
-  angulo_perforacion: { type: DataTypes.FLOAT, allowNull: false },
-  nfilas_de_hasta: { type: DataTypes.STRING, allowNull: false },
-  detalles_trabajo_realizado: { type: DataTypes.STRING, allowNull: false },
+  codigo_actividad: { type: DataTypes.STRING, allowNull: true },
+  nivel: { type: DataTypes.STRING, allowNull: true },
+  tajo: { type: DataTypes.STRING, allowNull: true },
+  nbroca: { type: DataTypes.INTEGER, allowNull: true },
+  ntaladro: { type: DataTypes.INTEGER, allowNull: true },
+  nbarras: { type: DataTypes.INTEGER, allowNull: true },
+  longitud_perforacion: { type: DataTypes.FLOAT, allowNull: true },
+  angulo_perforacion: { type: DataTypes.FLOAT, allowNull: true },
+  nfilas_de_hasta: { type: DataTypes.STRING, allowNull: true },
+  detalles_trabajo_realizado: { type: DataTypes.STRING, allowNull: true },
   perforaciontaladrolargo_id: {
     type: DataTypes.INTEGER,
     references: { model: NubePerforacionTaladroLargo, key: 'id' },
@@ -115,12 +115,12 @@ const NubeInterPerforacionTaladroLargo = sequelize.define('nube_InterPerforacion
 // 🔹 Modelo PerforacionHorizontal
 const NubePerforacionHorizontal = sequelize.define('nube_PerforacionHorizontal', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  zona: { type: DataTypes.STRING, allowNull: false },
-  tipo_labor: { type: DataTypes.STRING, allowNull: false },
-  labor: { type: DataTypes.STRING, allowNull: false },
-  veta: { type: DataTypes.STRING, allowNull: false },
-  nivel: { type: DataTypes.STRING, allowNull: false },
-  tipo_perforacion: { type: DataTypes.STRING, allowNull: false },
+  zona: { type: DataTypes.STRING, allowNull: true },
+  tipo_labor: { type: DataTypes.STRING, allowNull: true },
+  labor: { type: DataTypes.STRING, allowNull: true },
+  veta: { type: DataTypes.STRING, allowNull: true },
+  nivel: { type: DataTypes.STRING, allowNull: true },
+  tipo_perforacion: { type: DataTypes.STRING, allowNull: true },
   estado_id: {
     type: DataTypes.INTEGER,
     references: { model: NubeEstado, key: 'id' },
@@ -134,15 +134,15 @@ const NubePerforacionHorizontal = sequelize.define('nube_PerforacionHorizontal',
 // 🔹 Modelo InterPerforacionHorizontal
 const NubeInterPerforacionHorizontal = sequelize.define('nube_InterPerforacionHorizontal', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  codigo_actividad: { type: DataTypes.STRING, allowNull: false },
-  nivel: { type: DataTypes.STRING, allowNull: false },
-  labor: { type: DataTypes.STRING, allowNull: false },
-  seccion_la_labor: { type: DataTypes.STRING, allowNull: false },
-  nbroca: { type: DataTypes.INTEGER, allowNull: false },
-  ntaladro: { type: DataTypes.INTEGER, allowNull: false },
-  ntaladros_rimados: { type: DataTypes.INTEGER, allowNull: false },
-  longitud_perforacion: { type: DataTypes.FLOAT, allowNull: false },
-  detalles_trabajo_realizado: { type: DataTypes.STRING, allowNull: false },
+  codigo_actividad: { type: DataTypes.STRING, allowNull: true },
+  nivel: { type: DataTypes.STRING, allowNull: true },
+  labor: { type: DataTypes.STRING, allowNull: true },
+  seccion_la_labor: { type: DataTypes.STRING, allowNull: true },
+  nbroca: { type: DataTypes.INTEGER, allowNull: true },
+  ntaladro: { type: DataTypes.INTEGER, allowNull: true },
+  ntaladros_rimados: { type: DataTypes.INTEGER, allowNull: true },
+  longitud_perforacion: { type: DataTypes.FLOAT, allowNull: true },
+  detalles_trabajo_realizado: { type: DataTypes.STRING, allowNull: true },
   perforacionhorizontal_id: {
     type: DataTypes.INTEGER,
     references: { model: NubePerforacionHorizontal, key: 'id' },
@@ -156,12 +156,12 @@ const NubeInterPerforacionHorizontal = sequelize.define('nube_InterPerforacionHo
 // 🔹 Modelo Sostenimiento
 const NubeSostenimiento = sequelize.define('nube_Sostenimiento', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  zona: { type: DataTypes.STRING, allowNull: false },
-  tipo_labor: { type: DataTypes.STRING, allowNull: false },
-  labor: { type: DataTypes.STRING, allowNull: false },
-  veta: { type: DataTypes.STRING, allowNull: false },
-  nivel: { type: DataTypes.STRING, allowNull: false },
-  tipo_perforacion: { type: DataTypes.STRING, allowNull: false },
+  zona: { type: DataTypes.STRING, allowNull: true },
+  tipo_labor: { type: DataTypes.STRING, allowNull: true },
+  labor: { type: DataTypes.STRING, allowNull: true },
+  veta: { type: DataTypes.STRING, allowNull: true },
+  nivel: { type: DataTypes.STRING, allowNull: true },
+  tipo_perforacion: { type: DataTypes.STRING, allowNull: true },
   estado_id: {
     type: DataTypes.INTEGER,
     references: { model: NubeEstado, key: 'id' },
@@ -175,14 +175,14 @@ const NubeSostenimiento = sequelize.define('nube_Sostenimiento', {
 // 🔹 Modelo InterSostenimiento
 const NubeInterSostenimiento = sequelize.define('nube_InterSostenimiento', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  codigo_actividad: { type: DataTypes.STRING, allowNull: false },
-  nivel: { type: DataTypes.STRING, allowNull: false },
-  labor: { type: DataTypes.STRING, allowNull: false },
-  seccion_de_labor: { type: DataTypes.STRING, allowNull: false },
-  nbroca: { type: DataTypes.INTEGER, allowNull: false },
-  ntaladro: { type: DataTypes.INTEGER, allowNull: false },
-  longitud_perforacion: { type: DataTypes.FLOAT, allowNull: false },
-  malla_instalada: { type: DataTypes.STRING, allowNull: false },
+  codigo_actividad: { type: DataTypes.STRING, allowNull: true },
+  nivel: { type: DataTypes.STRING, allowNull: true },
+  labor: { type: DataTypes.STRING, allowNull: true },
+  seccion_de_labor: { type: DataTypes.STRING, allowNull: true },
+  nbroca: { type: DataTypes.INTEGER, allowNull: true },
+  ntaladro: { type: DataTypes.INTEGER, allowNull: true },
+  longitud_perforacion: { type: DataTypes.FLOAT, allowNull: true },
+  malla_instalada: { type: DataTypes.STRING, allowNull: true },
   sostenimiento_id: {
     type: DataTypes.INTEGER,
     references: { model: NubeSostenimiento, key: 'id' },
