@@ -79,6 +79,7 @@ const NubePerforacionTaladroLargo = sequelize.define('nube_PerforacionTaladroLar
   veta: { type: DataTypes.STRING, allowNull: true },
   nivel: { type: DataTypes.STRING, allowNull: true },
   tipo_perforacion: { type: DataTypes.STRING, allowNull: true },
+  observacion: { type: DataTypes.TEXT, allowNull: true },
   estado_id: {
     type: DataTypes.INTEGER,
     references: { model: NubeEstado, key: 'id' },
@@ -122,6 +123,7 @@ const NubePerforacionHorizontal = sequelize.define('nube_PerforacionHorizontal',
   veta: { type: DataTypes.STRING, allowNull: true },
   nivel: { type: DataTypes.STRING, allowNull: true },
   tipo_perforacion: { type: DataTypes.STRING, allowNull: true },
+  observacion: { type: DataTypes.TEXT, allowNull: true },
   estado_id: {
     type: DataTypes.INTEGER,
     references: { model: NubeEstado, key: 'id' },
@@ -164,6 +166,7 @@ const NubeSostenimiento = sequelize.define('nube_Sostenimiento', {
   veta: { type: DataTypes.STRING, allowNull: true },
   nivel: { type: DataTypes.STRING, allowNull: true },
   tipo_perforacion: { type: DataTypes.STRING, allowNull: true },
+  observacion: { type: DataTypes.TEXT, allowNull: true },
   estado_id: {
     type: DataTypes.INTEGER,
     references: { model: NubeEstado, key: 'id' },
