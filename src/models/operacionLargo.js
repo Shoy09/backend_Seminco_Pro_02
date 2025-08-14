@@ -104,6 +104,7 @@ const NubeInterPerforacionTaladroLargo = sequelize.define('nube_InterPerforacion
   angulo_perforacion: { type: DataTypes.FLOAT, allowNull: true },
   nfilas_de_hasta: { type: DataTypes.STRING, allowNull: true },
   detalles_trabajo_realizado: { type: DataTypes.STRING, allowNull: true },
+  metros_perforados: { type: DataTypes.FLOAT, allowNull: true },
   perforaciontaladrolargo_id: {
     type: DataTypes.INTEGER,
     references: { model: NubePerforacionTaladroLargo, key: 'id' },
@@ -147,6 +148,7 @@ const NubeInterPerforacionHorizontal = sequelize.define('nube_InterPerforacionHo
   ntaladros_rimados: { type: DataTypes.INTEGER, allowNull: true },
   longitud_perforacion: { type: DataTypes.FLOAT, allowNull: true },
   detalles_trabajo_realizado: { type: DataTypes.STRING, allowNull: true },
+    metros_perforados: { type: DataTypes.FLOAT, allowNull: true },
   perforacionhorizontal_id: {
     type: DataTypes.INTEGER,
     references: { model: NubePerforacionHorizontal, key: 'id' },
@@ -190,6 +192,7 @@ const NubeInterSostenimiento = sequelize.define('nube_InterSostenimiento', {
   longitud_perforacion: { type: DataTypes.FLOAT, allowNull: true },
   malla_instalada: { type: DataTypes.STRING, allowNull: true },
   detalles_trabajo_realizado: { type: DataTypes.STRING, allowNull: true },
+    metros_perforados: { type: DataTypes.FLOAT, allowNull: true },
   sostenimiento_id: {
     type: DataTypes.INTEGER,
     references: { model: NubeSostenimiento, key: 'id' },
