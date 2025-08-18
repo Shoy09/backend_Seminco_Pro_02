@@ -23,13 +23,48 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     proceso: {
-      type: DataTypes.STRING(255), // Establece el tamaño máximo del campo (puedes cambiar 255 al tamaño que desees)
-      allowNull: true // Este campo puede ser nulo si no lo deseas obligatorio
+      type: DataTypes.STRING(255),
+      allowNull: true
     }
   }, {
     tableName: "estados",
     timestamps: false
   });
 
-  return Estado;
+  // Nuevo modelo SubEstado
+  const SubEstado = sequelize.define("SubEstado", {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    codigo: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true
+    },
+    tipo_estado: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    estadoId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "estados",
+        key: "id"
+      },
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE"
+    }
+  }, {
+    tableName: "sub_estados",
+    timestamps: false
+  });
+
+  // Relación 1:N
+  Estado.hasMany(SubEstado, { foreignKey: "estadoId", as: "subEstados" });
+  SubEstado.belongsTo(Estado, { foreignKey: "estadoId", as: "estado" });
+
+  return { Estado, SubEstado };
 };
