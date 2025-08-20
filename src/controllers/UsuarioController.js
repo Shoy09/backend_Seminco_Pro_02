@@ -297,3 +297,26 @@ exports.actualizarOperacionesAutorizadas = [
         }
     }
 ];
+
+exports.obtenerRol = [
+  verificarToken,
+  async (req, res) => {
+    try {
+      const { id } = req.user; // viene del token
+
+      const [rows] = await db.query(
+        "SELECT rol FROM usuarios WHERE id = ?",
+        [id]
+      );
+
+      if (rows.length === 0) {
+        return res.status(404).json({ error: "Usuario no encontrado" });
+      }
+
+      res.status(200).json({ rol: rows[0].rol });
+    } catch (error) {
+      console.error("Error al obtener rol del usuario:", error.message);
+      res.status(500).json({ error: "Error al obtener rol del usuario" });
+    }
+  }
+];
