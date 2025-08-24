@@ -814,10 +814,12 @@ async function actualizarOperacionSostenimiento(req, res) {
 
 async function obtenerOperacionesSostenimiento(req, res) {
   try {
-    const operaciones = await NubeOperacion.findAll({
-      where: { 
-        tipo_operacion: 'SOSTENIMIENTO' 
-      },
+    const page = parseInt(req.query.page) || 1;   // página actual
+    const limit = parseInt(req.query.limit) || 50; // registros por página
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await NubeOperacion.findAndCountAll({
+      where: { tipo_operacion: 'SOSTENIMIENTO' },
       include: [
         {
           model: NubeEstado,
@@ -835,30 +837,24 @@ async function obtenerOperacionesSostenimiento(req, res) {
             }
           ]
         },
-        { 
-          model: NubeHorometros, 
-          as: 'horometros' 
-        },
-        { 
-          model: NubeCheckListOperacion, 
-          as: 'checklists' 
-        }
+        { model: NubeHorometros, as: 'horometros' },
+        { model: NubeCheckListOperacion, as: 'checklists' }
       ],
       order: [
         ['createdAt', 'DESC'],
         [{ model: NubeEstado, as: 'estados' }, 'numero', 'ASC'],
-        [{ 
-          model: NubeEstado, 
-          as: 'estados', 
-          include: [{ 
-            model: NubeSostenimiento, 
-            as: 'sostenimientos' 
-          }] 
-        }, 'createdAt', 'ASC']
-      ]
+        [{ model: NubeEstado, as: 'estados', include: [{ model: NubeSostenimiento, as: 'sostenimientos' }] }, 'createdAt', 'ASC']
+      ],
+      limit,
+      offset
     });
 
-    res.status(200).json(operaciones);
+    res.status(200).json({
+      total: count,
+      page,
+      totalPages: Math.ceil(count / limit),
+      data: rows
+    });
   } catch (error) {
     console.error('Error en obtenerOperacionesSostenimiento:', error);
     res.status(500).json({ 
@@ -867,5 +863,6 @@ async function obtenerOperacionesSostenimiento(req, res) {
     });
   }
 }
+
 
 module.exports = { crearOperacionLargo,actualizarOperacionLargo, obtenerOperacionesLargo, crearOperacionHorizontal,actualizarOperacionHorizontal, obtenerOperacionesHorizontal, crearOperacionSostenimiento, actualizarOperacionSostenimiento, obtenerOperacionesSostenimiento  };
