@@ -814,11 +814,10 @@ async function actualizarOperacionSostenimiento(req, res) {
 
 async function obtenerOperacionesSostenimiento(req, res) {
   try {
-    const limit = parseInt(req.query.limit) || 100; // tamaño lote
-    const offset = parseInt(req.query.offset) || 0;
-
-    const { rows, count } = await NubeOperacion.findAndCountAll({
-      where: { tipo_operacion: 'SOSTENIMIENTO' },
+    const operaciones = await NubeOperacion.findAll({
+      where: { 
+        tipo_operacion: 'SOSTENIMIENTO' 
+      },
       include: [
         {
           model: NubeEstado,
@@ -828,31 +827,45 @@ async function obtenerOperacionesSostenimiento(req, res) {
               model: NubeSostenimiento,
               as: 'sostenimientos',
               include: [
-                { model: NubeInterSostenimiento, as: 'inter_sostenimientos' }
+                { 
+                  model: NubeInterSostenimiento, 
+                  as: 'inter_sostenimientos' 
+                }
               ]
             }
           ]
         },
-        { model: NubeHorometros, as: 'horometros' },
-        { model: NubeCheckListOperacion, as: 'checklists' }
+        { 
+          model: NubeHorometros, 
+          as: 'horometros' 
+        },
+        { 
+          model: NubeCheckListOperacion, 
+          as: 'checklists' 
+        }
       ],
       order: [
         ['createdAt', 'DESC'],
-        [{ model: NubeEstado, as: 'estados' }, 'numero', 'ASC']
-      ],
-      limit,
-      offset
+        [{ model: NubeEstado, as: 'estados' }, 'numero', 'ASC'],
+        [{ 
+          model: NubeEstado, 
+          as: 'estados', 
+          include: [{ 
+            model: NubeSostenimiento, 
+            as: 'sostenimientos' 
+          }] 
+        }, 'createdAt', 'ASC']
+      ]
     });
 
-    res.status(200).json({
-      total: count,
-      registros: rows
-    });
+    res.status(200).json(operaciones);
   } catch (error) {
     console.error('Error en obtenerOperacionesSostenimiento:', error);
-    res.status(500).json({ error: error.message, stack: error.stack });
+    res.status(500).json({ 
+      error: error.message,
+      stack: error.stack 
+    });
   }
 }
-
 
 module.exports = { crearOperacionLargo,actualizarOperacionLargo, obtenerOperacionesLargo, crearOperacionHorizontal,actualizarOperacionHorizontal, obtenerOperacionesHorizontal, crearOperacionSostenimiento, actualizarOperacionSostenimiento, obtenerOperacionesSostenimiento  };
