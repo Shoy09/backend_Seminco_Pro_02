@@ -11,7 +11,7 @@ const verificarToken = require('./middleware/auth');
 
 // ✅ Configuración de CORS
 app.use(cors({
-  origin: ['http://localhost:4200', 'https://backend-seminco-mina-02.onrender.com'], 
+  origin: ['http://localhost:4200', 'https://seminco-norcobre.netlify.app'], 
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
