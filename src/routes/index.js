@@ -30,6 +30,7 @@ const mediLargo = require('../routes/api/medicionesLargoRoutes');
 const Checklist = require('../routes/api/checklistItemRoutes');
 const semanas = require('../routes/api/semanasRoutes');
 const pdfOperacion = require('../routes/api/pdfRoutes');
+const OrigenDestino = require('../routes/api/origenDestinoRoutes');
 
 router.use('/usuarios', usuariosRoutes);  
 router.use('/auth', authRoutes);  
@@ -59,5 +60,6 @@ router.use('/medicion-tal-horizontal', mediHorizontal);
 router.use('/check-list', Checklist); 
 router.use('/semana-personali', semanas); 
 router.use('/pdf-operacion', pdfOperacion); 
+router.use('/Origen-Destino', OrigenDestino); 
 
 module.exports = router;
