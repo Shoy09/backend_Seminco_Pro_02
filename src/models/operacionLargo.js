@@ -203,6 +203,26 @@ const NubeInterSostenimiento = sequelize.define('nube_InterSostenimiento', {
   timestamps: true,
 });
 
+// 🔹 Modelo Carguio
+const NubeCarguio = sequelize.define('nube_Carguio', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  estado_id: {
+    type: DataTypes.INTEGER,
+    references: { model: NubeEstado, key: 'id' },
+    onDelete: 'CASCADE',
+  },
+  tipo_labor: { type: DataTypes.STRING, allowNull: true },
+  labor: { type: DataTypes.STRING, allowNull: true },
+  tipo_labor_manual: { type: DataTypes.STRING, allowNull: true },
+  labor_manual: { type: DataTypes.STRING, allowNull: true },
+  ncucharas: { type: DataTypes.INTEGER, allowNull: true },
+  observacion: { type: DataTypes.TEXT, allowNull: true }
+}, {
+  tableName: 'nube_carguio',
+  timestamps: true,
+});
+
+
 // 🔹 Relaciones
 
 NubeOperacion.hasMany(NubeHorometros, { foreignKey: 'operacion_id', as: 'horometros' });
@@ -212,6 +232,7 @@ NubeOperacion.hasMany(NubeEstado, { foreignKey: 'operacion_id', as: 'estados' })
 NubeEstado.hasMany(NubePerforacionTaladroLargo, { foreignKey: 'estado_id', as: 'perforaciones_taladro_largo' });
 NubeEstado.hasMany(NubePerforacionHorizontal, { foreignKey: 'estado_id', as: 'perforaciones_horizontal' });
 NubeEstado.hasMany(NubeSostenimiento, { foreignKey: 'estado_id', as: 'sostenimientos' });
+NubeEstado.hasMany(NubeCarguio, { foreignKey: 'estado_id', as: 'carguios' });
 
 NubePerforacionTaladroLargo.hasMany(NubeInterPerforacionTaladroLargo, { foreignKey: 'perforaciontaladrolargo_id', as: 'inter_perforaciones' });
 NubePerforacionHorizontal.hasMany(NubeInterPerforacionHorizontal, { foreignKey: 'perforacionhorizontal_id', as: 'inter_perforaciones_horizontal' });
@@ -227,5 +248,6 @@ module.exports = {
   NubePerforacionHorizontal,
   NubeInterPerforacionHorizontal,
   NubeSostenimiento,
-  NubeInterSostenimiento
+  NubeInterSostenimiento,
+  NubeCarguio   
 };

@@ -8,8 +8,8 @@ const { NubeOperacion,
   NubePerforacionHorizontal,
   NubeInterPerforacionHorizontal,
   NubeSostenimiento,
-  NubeInterSostenimiento
-    
+  NubeInterSostenimiento,
+  NubeCarguio
  } = require('../models/operacionLargo');
 
 async function crearOperacionLargo(req, res) {
@@ -868,4 +868,228 @@ async function obtenerOperacionesSostenimiento(req, res) {
   }
 }
 
-module.exports = { crearOperacionLargo,actualizarOperacionLargo, obtenerOperacionesLargo, crearOperacionHorizontal,actualizarOperacionHorizontal, obtenerOperacionesHorizontal, crearOperacionSostenimiento, actualizarOperacionSostenimiento, obtenerOperacionesSostenimiento  };
+// CARGUIO--------------------------------------
+async function crearOperacionCarguio(req, res) {
+  const t = await sequelize.transaction();
+
+  try {
+    const operacionesData = Array.isArray(req.body) ? req.body : [req.body];
+    const idsOperacionesCreadas = [];
+
+    for (const data of operacionesData) {
+      // 1️⃣ Crear operación principal
+      const operacion = await NubeOperacion.create(data.operacion, { transaction: t });
+      idsOperacionesCreadas.push(operacion.id);
+
+      // 2️⃣ Crear estados
+      const estados = data.estados.map(estado => ({
+        ...estado,
+        operacion_id: operacion.id
+      }));
+      const estadosCreados = await NubeEstado.bulkCreate(estados, { transaction: t, returning: true });
+
+      // 3️⃣ Crear carguio de cada estado
+      for (let i = 0; i < data.estados.length; i++) {
+        const estadoData = data.estados[i];
+        const estadoCreado = estadosCreados[i];
+
+        if (estadoData.carguios && estadoData.carguios.length > 0) {
+          const carguios = estadoData.carguios.map(carg => ({
+            ...carg,
+            estado_id: estadoCreado.id
+          }));
+          await NubeCarguio.bulkCreate(carguios, { transaction: t });
+        }
+      }
+
+      // 4️⃣ Crear horómetros
+      if (data.horometros && data.horometros.length > 0) {
+        const horometros = data.horometros.map(horo => ({
+          ...horo,
+          operacion_id: operacion.id
+        }));
+        await NubeHorometros.bulkCreate(horometros, { transaction: t });
+      }
+
+      // 5️⃣ Crear checklist
+      if (data.checklists && data.checklists.length > 0) {
+        const checklist = data.checklists.map(chk => ({
+          ...chk,
+          operacion_id: operacion.id
+        }));
+        await NubeCheckListOperacion.bulkCreate(checklist, { transaction: t });
+      }
+    }
+
+    await t.commit();
+    res.status(201).json({
+      success: true,
+      operaciones_ids: idsOperacionesCreadas,
+      message: 'Operación de carguio creada exitosamente'
+    });
+
+  } catch (error) {
+    await t.rollback();
+    console.error('Error en crearOperacionCarguio:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      message: 'Error al crear la operación de carguio'
+    });
+  }
+}
+
+async function actualizarOperacionCarguio(req, res) {
+  const t = await sequelize.transaction();
+
+  try {
+    const operacionesData = Array.isArray(req.body) ? req.body : [req.body];
+    const resultados = [];
+
+    for (const data of operacionesData) {
+      const operacionId = data.operacion.id;
+      const resultadoOperacion = {
+        id: operacionId,
+        success: true,
+        message: 'Operación de carguio actualizada correctamente'
+      };
+
+      try {
+        // 1️⃣ Verificar que la operación existe
+        const operacionExistente = await NubeOperacion.findByPk(operacionId, { transaction: t });
+        if (!operacionExistente) {
+          throw new Error(`Operación con ID ${operacionId} no encontrada`);
+        }
+
+        // 2️⃣ Actualizar operación principal
+        await NubeOperacion.update(data.operacion, {
+          where: { id: operacionId },
+          transaction: t
+        });
+
+        // 3️⃣ Eliminar y recrear estados con carguios
+        await NubeEstado.destroy({ where: { operacion_id: operacionId }, transaction: t });
+        if (data.estados && data.estados.length > 0) {
+          const estadosCreados = await NubeEstado.bulkCreate(
+            data.estados.map(estado => ({ ...estado, operacion_id: operacionId })),
+            { transaction: t, returning: true }
+          );
+
+          for (let i = 0; i < data.estados.length; i++) {
+            const estadoData = data.estados[i];
+            const estadoCreado = estadosCreados[i];
+
+            if (estadoData.carguios && estadoData.carguios.length > 0) {
+              const carguios = estadoData.carguios.map(carg => ({
+                ...carg,
+                estado_id: estadoCreado.id
+              }));
+              await NubeCarguio.bulkCreate(carguios, { transaction: t });
+            }
+          }
+        }
+
+        // 4️⃣ Horómetros
+        await NubeHorometros.destroy({ where: { operacion_id: operacionId }, transaction: t });
+        if (data.horometros && data.horometros.length > 0) {
+          await NubeHorometros.bulkCreate(
+            data.horometros.map(horo => ({ ...horo, operacion_id: operacionId })),
+            { transaction: t }
+          );
+        }
+
+        // 5️⃣ Checklists
+        await NubeCheckListOperacion.destroy({ where: { operacion_id: operacionId }, transaction: t });
+        if (data.checklists && data.checklists.length > 0) {
+          await NubeCheckListOperacion.bulkCreate(
+            data.checklists.map(chk => ({ ...chk, operacion_id: operacionId })),
+            { transaction: t }
+          );
+        }
+
+        resultados.push(resultadoOperacion);
+      } catch (error) {
+        resultadoOperacion.success = false;
+        resultadoOperacion.message = `Error al actualizar operación ${operacionId}: ${error.message}`;
+        resultados.push(resultadoOperacion);
+      }
+    }
+
+    // ⚠️ Verificamos si hubo errores en alguna operación
+    const errores = resultados.filter(r => !r.success);
+    if (errores.length > 0) {
+      await t.rollback();
+      return res.status(207).json({
+        success: false,
+        message: 'Algunas operaciones de carguio no se actualizaron correctamente',
+        resultados,
+        errores: errores.map(e => e.message)
+      });
+    }
+
+    await t.commit();
+    res.status(200).json({
+      success: true,
+      message: 'Todas las operaciones de carguio actualizadas correctamente',
+      resultados
+    });
+
+  } catch (error) {
+    await t.rollback();
+    console.error('Error en actualizarOperacionCarguio:', error);
+    res.status(500).json({ 
+      success: false,
+      error: error.message,
+      message: 'Error general en la transacción de operaciones de carguio'
+    });
+  }
+}
+
+async function obtenerOperacionesCarguio(req, res) {
+  try {
+    const operaciones = await NubeOperacion.findAll({
+      where: { 
+        tipo_operacion: 'CARGUIO' 
+      },
+      include: [
+        {
+          model: NubeEstado,
+          as: 'estados',
+          include: [
+            {
+              model: NubeCarguio,
+              as: 'carguios'
+            }
+          ]
+        },
+        { 
+          model: NubeHorometros, 
+          as: 'horometros' 
+        },
+        { 
+          model: NubeCheckListOperacion, 
+          as: 'checklists' 
+        }
+      ],
+      order: [
+        ['createdAt', 'DESC'],
+        [{ model: NubeEstado, as: 'estados' }, 'numero', 'ASC'],
+        [
+          { model: NubeEstado, as: 'estados', include: [{ model: NubeCarguio, as: 'carguios' }] },
+          'createdAt',
+          'ASC'
+        ]
+      ]
+    });
+
+    res.status(200).json(operaciones);
+  } catch (error) {
+    console.error('Error en obtenerOperacionesCarguio:', error);
+    res.status(500).json({ 
+      error: error.message,
+      stack: error.stack 
+    });
+  }
+}
+
+module.exports = { crearOperacionLargo,actualizarOperacionLargo, obtenerOperacionesLargo, crearOperacionHorizontal,actualizarOperacionHorizontal, obtenerOperacionesHorizontal, crearOperacionSostenimiento, actualizarOperacionSostenimiento, obtenerOperacionesSostenimiento, crearOperacionCarguio, actualizarOperacionCarguio, obtenerOperacionesCarguio };

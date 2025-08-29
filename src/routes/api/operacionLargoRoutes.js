@@ -19,4 +19,11 @@ router.post('/sostenimiento', OperacionController.crearOperacionSostenimiento);
 router.put('/update-sostenimiento', OperacionController.actualizarOperacionSostenimiento);
 router.get('/sostenimiento' , verificarToken, OperacionController.obtenerOperacionesSostenimiento);
 router.get('/libre-sostenimiento' , OperacionController.obtenerOperacionesSostenimiento);
+
+// Rutas para Operaciones de Carguio
+router.post('/carguio', OperacionController.crearOperacionCarguio);
+router.put('/update-carguio', OperacionController.actualizarOperacionCarguio);
+router.get('/carguio' , verificarToken, OperacionController.obtenerOperacionesCarguio);
+router.get('/libre-carguio' , OperacionController.obtenerOperacionesCarguio);
+
 module.exports = router;
