@@ -8,11 +8,14 @@ const swaggerUI = require('swagger-ui-express');
 const swaggerDocument = require('../swagger.json'); 
 
 app.use(cors());
-app.use(bodyParser.json());
 
+// Configurar body-parser con límite grande
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
+// Rutas
 app.use('/api', routes);
 app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
-
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
